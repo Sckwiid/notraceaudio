@@ -1,4 +1,4 @@
-// Phase B + C audio enhancements for unmark.audio
+// Phase B + C audio enhancements for No Trace Audio
 // FFT-based STFT phase randomization + spectral magnitude jitter
 // (overlap-add Hann window, hop = N/4 for COLA reconstruction)
 

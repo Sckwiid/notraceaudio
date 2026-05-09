@@ -52,8 +52,8 @@ const PRESETS = {
     resampleChain: { enabled: true, intermediateRate: 47983 },
     tapeSaturation: { enabled: true, drive: 1.08 },
     pinkNoiseFloor: { enabled: true, levelDb: -60 },
-    phaseRand: { enabled: true, hfStartHz: 7000, amount: 0.6 },
-    magJitter: { enabled: true, dbRange: 0.3 },
+    phaseRand: { enabled: false, hfStartHz: 7000, amount: 0.6 },
+    magJitter: { enabled: false, dbRange: 0.3 },
     timeWarp: { enabled: true, depthPct: 0.25 },
     convolution: { enabled: true, durationMs: 35, decay: 5.5, mix: 0.12 },
     stereoDecorr: { enabled: true, delayUs: 80 },
@@ -69,8 +69,8 @@ const PRESETS = {
     resampleChain: { enabled: true, intermediateRate: 47983 },
     tapeSaturation: { enabled: true, drive: 1.07 },
     pinkNoiseFloor: { enabled: true, levelDb: -62 },
-    phaseRand: { enabled: true, hfStartHz: 6000, amount: 1.0 },
-    magJitter: { enabled: true, dbRange: 0.4 },
+    phaseRand: { enabled: false, hfStartHz: 6000, amount: 1.0 },
+    magJitter: { enabled: false, dbRange: 0.4 },
     timeWarp: { enabled: true, depthPct: 0.3 },
     convolution: { enabled: true, durationMs: 40, decay: 5, mix: 0.14 },
     stereoDecorr: { enabled: true, delayUs: 90 },
@@ -416,4 +416,3 @@ export function buildPeakData(audioBuffer, targetBins = 600) {
   }
   return peaks;
 }
-

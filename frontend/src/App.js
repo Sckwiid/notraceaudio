@@ -55,7 +55,7 @@ function App() {
             <AudioWaveform className="h-4 w-4 text-cyan-300" />
           </div>
           <div className="font-display text-base sm:text-lg tracking-tight">
-            <span className="text-white">unmark</span><span className="text-cyan-400">.</span><span className="text-zinc-400">audio</span>
+            <span className="text-white">No Trace</span><span className="text-cyan-400"> Audio</span>
           </div>
         </div>
         <a
@@ -76,7 +76,7 @@ function App() {
           </div>
           <h1 className="font-display mt-6 text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.05]">
             Retire les watermarks<br />
-            des musiques générées par <span className="text-cyan-300 italic">IA</span>.
+            des musiques générées par <span className="text-cyan-300 italic">IA</span>
           </h1>
           <p className="mt-5 max-w-2xl text-sm sm:text-base text-zinc-400 leading-relaxed">
             FFT phase randomization · resample chain · pitch+time shift · convolution · M/S decorrelation · pink noise floor · codec round-trip · spectrogram visualizer · A/B blind test · batch processing · strip metadata.
@@ -162,7 +162,7 @@ function App() {
         </section>
 
         <footer className="mt-20 pt-8 border-t border-white/5 text-center text-xs text-zinc-500 font-mono">
-          unmark.audio — built with <span className="text-cyan-400">♢</span> for music creators ·
+          No Trace Audio ·
           inspired by <a className="text-cyan-400 hover:underline" href="https://github.com/geeknik/ai-audio-fingerprint-remover" target="_blank" rel="noreferrer">geeknik/ai-audio-fingerprint-remover</a>
         </footer>
       </main>

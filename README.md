@@ -1,4 +1,4 @@
-# unmark.audio
+# No Trace Audio
 
 > Site **100 % statique** pour retirer les watermarks et fingerprints IA des musiques générées (Suno, ElevenLabs, OpenAI, etc.). **Tout le traitement se fait dans ton navigateur** via Web Audio API — aucun fichier n'est envoyé sur un serveur. Compatible **GitHub Pages, Cloudflare Pages, Netlify, Vercel**.
 
@@ -11,8 +11,8 @@ Inspiré du projet Python [`geeknik/ai-audio-fingerprint-remover`](https://githu
 | # | Étape | Effet |
 |---|------|-------|
 | 1 | Décodage local | `AudioContext.decodeAudioData()` — MP3/WAV/FLAC/OGG/M4A/AAC |
-| 2 | **FFT phase randomization HF** *(Phase B)* | STFT 2048 / Hann / hop ¼ — randomise la phase >6 kHz, **casse la cohérence du codec neuronal** |
-| 3 | **Spectral magnitude jitter** *(Phase B)* | Variation aléatoire ±0.4 dB par bin FFT — détruit les patterns de quantification |
+| 2 | **FFT phase randomization HF** *(Phase B)* | STFT 2048 / Hann / hop ¼ — randomise la phase >6 kHz, **casse la cohérence du codec neuronal** *(expérimental, peut dégrader la musique)* |
+| 3 | **Spectral magnitude jitter** *(Phase B)* | Variation aléatoire ±0.4 dB par bin FFT — détruit les patterns de quantification *(expérimental, peut dégrader la musique)* |
 | 4 | **Pitch + time micro-shift** | `playbackRate ±0.4-1.5 %` → décale toutes les fréquences |
 | 5 | **Micro time-warping** *(Phase B)* | Vibrato de tempo aléatoire ±0.3 % via `setValueCurveAtTime` — casse la régularité parfaite des onsets |
 | 6 | **Resample chain non-entier** | Pass à 47 983 Hz puis retour origRate → brouille la position sub-échantillon des artefacts |
@@ -25,7 +25,8 @@ Inspiré du projet Python [`geeknik/ai-audio-fingerprint-remover`](https://githu
 | 13 | **Codec round-trip MP3** *(optional)* | Re-encode 256/320 kbps puis re-décode → appose une signature codec lossy naturelle |
 | 14 | Re-encodage WAV PCM 16-bit **ou MP3 320 kbps** (lamejs) | Strip total des métadonnées |
 
-**4 presets** : Light · Standard · Aggressive · **Stealth** (anti-détection max — toutes les phases activées, codec round-trip ON).
+**4 presets** : Lite · Standard · Aggressive · **Stealth**.
+Par défaut, `phase randomization HF` et `spectral magnitude jitter` sont désactivés sur tous les presets (options expérimentales).
 
 ### Outils intégrés
 
@@ -65,8 +66,8 @@ yarn start
 
 ```bash
 # 1.1 - Récupère le code
-git clone <ton-repo> unmark-audio
-cd unmark-audio
+git clone <ton-repo> notraceaudio
+cd notraceaudio
 
 # 1.2 - Installe les dépendances
 cd frontend
@@ -219,7 +220,7 @@ yarn deploy
 Crée `frontend/public/CNAME` contenant ton domaine, ex :
 
 ```
-unmark.audio
+notraceaudio.com
 ```
 
 Configure ensuite chez ton registrar :

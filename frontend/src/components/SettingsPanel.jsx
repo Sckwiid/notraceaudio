@@ -5,7 +5,7 @@ import { ShieldCheck } from "lucide-react";
 import { PRESET_NAMES, getPreset } from "../lib/audioProcessor";
 
 const PRESET_LABELS = {
-  light: { name: "Light", desc: "Discret · qualité max" },
+  light: { name: "Lite", desc: "Discret · qualité max" },
   standard: { name: "Standard", desc: "Recommandé" },
   aggressive: { name: "Aggressive", desc: "Protection forte" },
   stealth: { name: "Stealth", desc: "Anti-détection max", icon: true },
@@ -188,6 +188,7 @@ export const SettingsPanel = ({ settings, setSettings, preset, setPreset }) => {
           testId="toggle-phaserand"
           label="Phase randomization HF"
           hint="Casse la cohérence de phase du codec neuronal"
+          warning="Expérimental · peut dégrader la musique"
           checked={settings.phaseRand?.enabled || false}
           onChange={(v) => update("phaseRand.enabled", v)}
         />
@@ -208,6 +209,7 @@ export const SettingsPanel = ({ settings, setSettings, preset, setPreset }) => {
           testId="toggle-magjitter"
           label="Spectral magnitude jitter"
           hint="Casse les patterns de quantification"
+          warning="Expérimental · peut dégrader la musique"
           checked={settings.magJitter?.enabled || false}
           onChange={(v) => update("magJitter.enabled", v)}
         />
@@ -336,11 +338,19 @@ const Section = ({ title, badge, children }) => (
 
 const Divider = () => <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />;
 
-const ToggleRow = ({ label, hint, checked, onChange, testId }) => (
+const ToggleRow = ({ label, hint, warning, checked, onChange, testId }) => (
   <div className="flex items-start justify-between gap-4">
     <div>
-      <Label className="text-sm text-white">{label}</Label>
+      <div className="flex flex-wrap items-center gap-2">
+        <Label className="text-sm text-white">{label}</Label>
+        {warning && (
+          <span className="rounded border border-amber-400/40 bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wide text-amber-300">
+            Warning
+          </span>
+        )}
+      </div>
       <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>
+      {warning && <p className="mt-1 text-[11px] text-amber-300/90">{warning}</p>}
     </div>
     <Switch checked={checked} onCheckedChange={onChange} data-testid={testId} />
   </div>
