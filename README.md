@@ -14,6 +14,25 @@ Un système de quotas journalier (`3/jour/IP`) + codes Pro (`NTA-PRO-XXXX`) est 
 Pour activer le frontend, crée `frontend/.env.production` avec `REACT_APP_QUOTA_API_URL=<url-du-worker>`.
 Optionnel : ajoute `REACT_APP_CONTACT_EMAIL=<ton-email>` pour les demandes de quota Pro.
 
+## SEO technique (implémenté)
+
+Le frontend inclut maintenant :
+
+- balises `title`, `meta description`, `robots`, `canonical`
+- Open Graph + Twitter cards
+- JSON-LD (`WebSite` + `SoftwareApplication`)
+- `robots.txt` + `sitemap.xml`
+- `favicon.svg` + `site.webmanifest`
+
+Si ton domaine final n'est pas `https://notraceaudio.com`, remplace l'URL dans :
+
+- `frontend/public/index.html`
+- `frontend/public/robots.txt`
+- `frontend/public/sitemap.xml`
+
+Checklist opérationnelle Search Console :
+- `docs/search-console-checklist.md`
+
 ---
 
 ## Pipeline anti-détection (Phase A + B + C — Dec 2025)

@@ -1,0 +1,16 @@
+{
+  "name": "No Trace Audio",
+  "short_name": "NoTraceAudio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080b",
+  "theme_color": "#07080b",
+  "description": "Nettoyage audio IA local dans le navigateur.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

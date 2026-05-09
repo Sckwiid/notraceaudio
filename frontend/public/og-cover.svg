@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="No Trace Audio">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#06080c" />
+      <stop offset="100%" stop-color="#101826" />
+    </linearGradient>
+    <linearGradient id="line" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1030" cy="110" r="220" fill="#0ea5e9" opacity="0.08" />
+  <circle cx="120" cy="560" r="260" fill="#22d3ee" opacity="0.08" />
+
+  <g fill="none" stroke="url(#line)" stroke-linecap="round" stroke-width="14">
+    <path d="M120 390h70" />
+    <path d="M220 320v140" />
+    <path d="M300 260v200" />
+    <path d="M380 300v160" />
+    <path d="M460 220v240" />
+    <path d="M540 280v180" />
+    <path d="M620 340v120" />
+  </g>
+
+  <text x="120" y="180" fill="#e2e8f0" font-family="Space Grotesk, Arial, sans-serif" font-size="68" font-weight="700">
+    No Trace Audio
+  </text>
+  <text x="120" y="245" fill="#22d3ee" font-family="JetBrains Mono, Menlo, monospace" font-size="28">
+    Nettoyage Audio IA Local
+  </text>
+  <text x="120" y="540" fill="#a1a1aa" font-family="Space Grotesk, Arial, sans-serif" font-size="28">
+    Presets • Batch • Spectrogramme • A/B Blind Test • Aucun upload
+  </text>
+</svg>
