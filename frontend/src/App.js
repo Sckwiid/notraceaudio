@@ -156,6 +156,17 @@ function App() {
           <div className="glass-card p-6 sm:p-8">
             <Dropzone onFiles={handleFiles} file={single} count={files.length} multiple={true} />
 
+            <div className="mt-6">
+              <QuotaPanel
+                enabled={quotaEnabled}
+                status={quotaStatus}
+                activeCode={proCode}
+                loading={quotaLoading}
+                onRefresh={syncQuotaStatus}
+                onSaveCode={saveProCode}
+              />
+            </div>
+
             {/* Render options strip — common to both views */}
             {files.length > 0 && (
               <div className="mt-6 flex flex-wrap items-center gap-4 rounded-xl border border-white/10 bg-black/30 p-4" data-testid="render-options">
@@ -165,14 +176,6 @@ function App() {
                   <Label htmlFor="random-seed" className="text-xs text-zinc-300">Random Seed</Label>
                   <Switch id="random-seed" checked={randomSeed} onCheckedChange={setRandomSeed} data-testid="toggle-random-seed" />
                 </div>
-                <QuotaPanel
-                  enabled={quotaEnabled}
-                  status={quotaStatus}
-                  activeCode={proCode}
-                  loading={quotaLoading}
-                  onRefresh={syncQuotaStatus}
-                  onSaveCode={saveProCode}
-                />
               </div>
             )}
 

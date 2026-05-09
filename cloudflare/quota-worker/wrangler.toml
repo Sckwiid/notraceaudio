@@ -9,10 +9,10 @@ ALLOWED_ORIGINS = "*"
 
 [[kv_namespaces]]
 binding = "QUOTA_KV"
-id = "REPLACE_WITH_PROD_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+id = "585010e6d12a4e5d8ee3d03f0fd80ea5"
+preview_id = "3bf87a220d1d4de68d38d3cfeef1bb07"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "notraceaudio-quota"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "b4c171be-1b65-4755-9158-34f74369a5af"

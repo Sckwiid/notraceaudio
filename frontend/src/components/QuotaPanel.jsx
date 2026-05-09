@@ -1,10 +1,31 @@
 import { useEffect, useState } from "react";
-import { KeyRound, RefreshCcw, ShieldAlert } from "lucide-react";
+import { KeyRound, Mail, RefreshCcw, ShieldAlert } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
+const CONTACT_EMAIL = process.env.REACT_APP_CONTACT_EMAIL || "contact@notraceaudio.com";
+const QUOTA_REQUESTS = ["20/jour", "100/jour", "illimité"];
+
 function formatQuota(quotaDaily) {
   return quotaDaily === null ? "Illimité" : `${quotaDaily}/jour`;
+}
+
+function buildContactHref(quota) {
+  const subject = encodeURIComponent(`Demande quota No Trace Audio - ${quota}`);
+  const body = encodeURIComponent(
+    [
+      "Bonjour,",
+      "",
+      `Je souhaite débloquer un quota ${quota} pour No Trace Audio.`,
+      "",
+      "Email :",
+      "Usage prévu :",
+      "Volume approximatif :",
+      "",
+      "Merci.",
+    ].join("\n"),
+  );
+  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 }
 
 export const QuotaPanel = ({ enabled, status, activeCode, loading, onRefresh, onSaveCode }) => {
@@ -68,6 +89,27 @@ export const QuotaPanel = ({ enabled, status, activeCode, loading, onRefresh, on
         <ShieldAlert className="h-3 w-3" />
         Sans code : 3 nettoyages par jour et par IP.
       </p>
+
+      <div className="mt-3 border-t border-white/10 pt-3">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="inline-flex items-center gap-1.5 text-zinc-300">
+            <Mail className="h-3.5 w-3.5 text-cyan-300" />
+            Demander plus de quota
+          </span>
+          <div className="ml-auto flex flex-wrap gap-1.5">
+            {QUOTA_REQUESTS.map((quota) => (
+              <a
+                key={quota}
+                href={buildContactHref(quota)}
+                className="rounded-md border border-white/15 bg-white/[0.03] px-2 py-1 font-mono text-[11px] text-zinc-300 hover:border-cyan-400/40 hover:text-cyan-200"
+                data-testid={`quota-request-${quota}`}
+              >
+                {quota}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

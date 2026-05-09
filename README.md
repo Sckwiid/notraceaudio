@@ -12,6 +12,7 @@ Un système de quotas journalier (`3/jour/IP`) + codes Pro (`NTA-PRO-XXXX`) est 
 - `cloudflare/quota-worker/src/index.js`
 
 Pour activer le frontend, crée `frontend/.env.production` avec `REACT_APP_QUOTA_API_URL=<url-du-worker>`.
+Optionnel : ajoute `REACT_APP_CONTACT_EMAIL=<ton-email>` pour les demandes de quota Pro.
 
 ---
 
