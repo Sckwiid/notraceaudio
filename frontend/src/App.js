@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import { Sparkles, ShieldCheck, Waves, Zap, Github, AudioWaveform, Dices, Layers } from "lucide-react";
 import { Switch } from "./components/ui/switch";
 import { Label } from "./components/ui/label";
@@ -8,7 +8,15 @@ import { Dropzone } from "./components/Dropzone";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { SingleTrackView } from "./components/SingleTrackView";
 import { BatchView } from "./components/BatchView";
+import { QuotaPanel } from "./components/QuotaPanel";
 import { getPreset } from "./lib/audioProcessor";
+import {
+  claimQuota,
+  getSavedProCode,
+  persistProCode,
+  quotaIsEnabled,
+  refreshQuotaStatus,
+} from "./lib/quotaClient";
 
 function App() {
   const [files, setFiles] = useState([]);
@@ -16,6 +24,20 @@ function App() {
   const [settings, setSettings] = useState(getPreset("standard"));
   const [randomSeed, setRandomSeed] = useState(false);
   const [outputFormat, setOutputFormat] = useState("wav");
+  const [proCode, setProCode] = useState(getSavedProCode());
+  const [quotaLoading, setQuotaLoading] = useState(false);
+  const [quotaStatus, setQuotaStatus] = useState({
+    allowed: true,
+    tier: "free",
+    quotaDaily: 3,
+    usedToday: 0,
+    remaining: 3,
+    resetAt: null,
+    dateBucket: null,
+    proCodeAccepted: false,
+  });
+
+  const quotaEnabled = quotaIsEnabled();
 
   const handleFiles = (newFiles) => {
     // Single click: replace; if multiple files, switch to batch
@@ -39,6 +61,43 @@ function App() {
 
   const isBatch = files.length > 1;
   const single = files.length === 1 ? files[0] : null;
+
+  const syncQuotaStatus = useCallback(async () => {
+    if (!quotaEnabled) return;
+    setQuotaLoading(true);
+    const status = await refreshQuotaStatus(proCode);
+    setQuotaStatus(status);
+    setQuotaLoading(false);
+  }, [quotaEnabled, proCode]);
+
+  useEffect(() => {
+    syncQuotaStatus();
+  }, [syncQuotaStatus]);
+
+  const saveProCode = async (nextCode) => {
+    const cleanCode = persistProCode(nextCode);
+    setProCode(cleanCode);
+    toast.success(cleanCode ? "Code Pro enregistré sur cet appareil." : "Code Pro supprimé de cet appareil.");
+    if (quotaEnabled) {
+      setQuotaLoading(true);
+      const status = await refreshQuotaStatus(cleanCode);
+      setQuotaStatus(status);
+      setQuotaLoading(false);
+      if (cleanCode && status.tier !== "pro") {
+        toast.error("Code non reconnu ou inactif.");
+      }
+    }
+  };
+
+  const guardQuota = async ({ units = 1, notify = true } = {}) => {
+    if (!quotaEnabled) return { allowed: true };
+    const status = await claimQuota({ units, proCode });
+    setQuotaStatus(status);
+    if (!status.allowed && notify) {
+      toast.error("Quota journalier atteint. Ajoute un code Pro pour augmenter la limite.");
+    }
+    return status;
+  };
 
   return (
     <div className="min-h-screen w-full text-white relative overflow-hidden">
@@ -106,6 +165,14 @@ function App() {
                   <Label htmlFor="random-seed" className="text-xs text-zinc-300">Random Seed</Label>
                   <Switch id="random-seed" checked={randomSeed} onCheckedChange={setRandomSeed} data-testid="toggle-random-seed" />
                 </div>
+                <QuotaPanel
+                  enabled={quotaEnabled}
+                  status={quotaStatus}
+                  activeCode={proCode}
+                  loading={quotaLoading}
+                  onRefresh={syncQuotaStatus}
+                  onSaveCode={saveProCode}
+                />
               </div>
             )}
 
@@ -117,6 +184,7 @@ function App() {
                   randomSeed={randomSeed}
                   outputFormat={outputFormat}
                   onReset={reset}
+                  onBeforeProcess={guardQuota}
                 />
               </div>
             )}
@@ -129,6 +197,7 @@ function App() {
                   randomSeed={randomSeed}
                   outputFormat={outputFormat}
                   onReset={reset}
+                  onBeforeProcess={guardQuota}
                 />
               </div>
             )}

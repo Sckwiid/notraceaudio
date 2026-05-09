@@ -4,6 +4,15 @@
 
 Inspiré du projet Python [`geeknik/ai-audio-fingerprint-remover`](https://github.com/geeknik/ai-audio-fingerprint-remover), porté en JavaScript pur.
 
+## Quotas Cloudflare (optionnel)
+
+Un système de quotas journalier (`3/jour/IP`) + codes Pro (`NTA-PRO-XXXX`) est prêt dans :
+
+- `cloudflare/quota-worker/README.md`
+- `cloudflare/quota-worker/src/index.js`
+
+Pour activer le frontend, crée `frontend/.env.production` avec `REACT_APP_QUOTA_API_URL=<url-du-worker>`.
+
 ---
 
 ## Pipeline anti-détection (Phase A + B + C — Dec 2025)

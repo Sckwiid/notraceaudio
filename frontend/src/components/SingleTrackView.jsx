@@ -10,7 +10,7 @@ import { decodeAudioFile, processBuffer, randomiseSettings, buildPeakData } from
 import { audioBufferToWavBlob } from "../lib/wavEncoder";
 import { audioBufferToMp3Blob } from "../lib/mp3Encoder";
 
-export const SingleTrackView = ({ file, settings, randomSeed, outputFormat, onReset }) => {
+export const SingleTrackView = ({ file, settings, randomSeed, outputFormat, onReset, onBeforeProcess }) => {
   const [originalBuffer, setOriginalBuffer] = useState(null);
   const [processedBuffer, setProcessedBuffer] = useState(null);
   const [originalUrl, setOriginalUrl] = useState(null);
@@ -57,6 +57,10 @@ export const SingleTrackView = ({ file, settings, randomSeed, outputFormat, onRe
     setIsProcessing(true);
     setProgress(0);
     try {
+      if (onBeforeProcess) {
+        const gate = await onBeforeProcess({ units: 1, notify: true });
+        if (!gate?.allowed) return;
+      }
       const effective = randomSeed ? randomiseSettings(settings) : settings;
       const out = await processBuffer(originalBuffer, effective, (p) => setProgress(Math.round(p * 100)));
       setProcessedBuffer(out);
@@ -74,7 +78,7 @@ export const SingleTrackView = ({ file, settings, randomSeed, outputFormat, onRe
     } finally {
       setIsProcessing(false);
     }
-  }, [originalBuffer, settings, randomSeed, outputFormat]);
+  }, [originalBuffer, settings, randomSeed, outputFormat, onBeforeProcess]);
 
   const handleDownload = () => {
     if (!processedUrl || !file) return;

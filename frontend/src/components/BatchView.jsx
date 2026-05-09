@@ -16,7 +16,7 @@ const STATUS_LABEL = {
   error: "Erreur",
 };
 
-export const BatchView = ({ files, settings, randomSeed, outputFormat, onReset, onAddMore }) => {
+export const BatchView = ({ files, settings, randomSeed, outputFormat, onReset, onAddMore, onBeforeProcess }) => {
   const [tracks, setTracks] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const cancelRef = useRef(false);
@@ -54,6 +54,13 @@ export const BatchView = ({ files, settings, randomSeed, outputFormat, onReset, 
   const processOne = useCallback(
     async (track) => {
       try {
+        if (onBeforeProcess) {
+          const gate = await onBeforeProcess({ units: 1, notify: false });
+          if (!gate?.allowed) {
+            updateTrack(track.id, { status: "error", error: "Quota quotidien atteint" });
+            return "quota_blocked";
+          }
+        }
         updateTrack(track.id, { status: "decoding", progress: 0 });
         const buf = await decodeAudioFile(track.file);
         if (cancelRef.current) return;
@@ -66,26 +73,36 @@ export const BatchView = ({ files, settings, randomSeed, outputFormat, onReset, 
         const blob = outputFormat === "mp3" ? audioBufferToMp3Blob(out, 320) : audioBufferToWavBlob(out);
         const url = URL.createObjectURL(blob);
         updateTrack(track.id, { status: "done", progress: 100, blobUrl: url });
+        return "ok";
       } catch (e) {
         console.error(e);
         updateTrack(track.id, { status: "error", error: e.message || "Erreur inconnue" });
+        return "error";
       }
     },
-    [settings, randomSeed, outputFormat],
+    [settings, randomSeed, outputFormat, onBeforeProcess],
   );
 
   const runAll = async () => {
     cancelRef.current = false;
+    let quotaBlocked = false;
     setIsRunning(true);
     // Get fresh state for each iteration so we don't process already-done tracks
     for (const t of tracks) {
       if (cancelRef.current) break;
       if (t.status === "done") continue;
       // eslint-disable-next-line no-await-in-loop
-      await processOne(t);
+      const result = await processOne(t);
+      if (result === "quota_blocked") {
+        quotaBlocked = true;
+        toast.error("Quota journalier atteint pendant le batch.");
+        break;
+      }
     }
     setIsRunning(false);
-    if (!cancelRef.current) toast.success(`Batch terminé — ${tracks.filter((t) => t.status !== "error").length} fichiers nettoyés`);
+    if (!cancelRef.current && !quotaBlocked) {
+      toast.success(`Batch terminé — ${tracks.filter((t) => t.status !== "error").length} fichiers nettoyés`);
+    }
   };
 
   const cancel = () => {
