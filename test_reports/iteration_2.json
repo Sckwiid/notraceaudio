@@ -1,0 +1,44 @@
+{
+  "summary": "Phase A frontend e2e tests passed 100%. Verified: page title, 4 presets (light/standard/aggressive/stealth), stealth highlighted with fuchsia border + ShieldCheck icon, all Phase A toggles (pitchtime/resamplechain/tape/pinknoise) visible, preset-stealth turns ALL Phase A toggles ON, preset-light turns ALL OFF, conditional sliders (slider-ratepct, slider-drive, slider-pinklevel) appear/hide correctly. Full E2E with 3s 440Hz mono WAV: upload -> stealth preset -> process -> waveform-processed + audio-processed both rendered (audio readyState=4, no error) -> download produced 't_clean.wav'. Zero console errors. Zero /api/* calls. Mobile (390x844) preset grid uses grid-cols-2 (2x2 wrap). Output duration differed (input 0:03 -> cleaned 0:02) due to playbackRate>1 in stealth — handled cleanly by OfflineAudioContext at 47983 Hz intermediate rate without errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "audioProcessor.js processBuffer pass1 length formula `Math.ceil((audioBuffer.length * (passRate/origRate)) / playbackRate)` is correct, but if user disables resampleChain while pitchTime is enabled, output length differs from original — handled gracefully but worth documenting in UI.",
+    "Pink noise & dither nodes connect directly to offline.destination instead of post-saturation node; this means filters/saturation do NOT shape the injected noise. This is by design (noise should be flat/pink at output), but the comment in code could clarify that the noise is added post-FX.",
+    "Files remain well under 700 LOC; SettingsPanel ~250 lines, audioProcessor ~280 lines — clean separation.",
+    "Minor: `preset-stealth` border uses fuchsia for active state but inactive stealth still shows pale fuchsia ShieldCheck — accessibility-wise, ensure the icon contrast is sufficient on dark bg; visually OK in screenshots."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (no backend)", "frontend": "100%"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "Generated /tmp/t.wav (3s 440Hz mono, 44.1kHz, 16-bit PCM, ~258KB).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Pure static SPA at https://music-no-mark.preview.emergentagent.com (no backend). Phase A added 4 new toggles + 3 new conditional sliders (testids: toggle-pitchtime, toggle-resamplechain, toggle-tape, toggle-pinknoise; slider-ratepct, slider-drive, slider-pinklevel) and a 4th preset 'stealth' (fuchsia theme with ShieldCheck icon). Two-pass processing via OfflineAudioContext at 47983 Hz then back to 44100 Hz works on Chromium. Output duration may differ from input due to playbackRate (pitch+time shift) — this is expected behavior, not a bug. Use 3+ second WAV (`python3 -c \"import wave,struct,math;sr=44100;f=wave.open('/tmp/t.wav','wb');f.setnchannels(1);f.setsampwidth(2);f.setframerate(sr);[f.writeframes(struct.pack('<h',int(32767*0.3*math.sin(2*math.pi*440*i/sr)))) for i in range(sr*3)];f.close()\"`) so the OfflineAudioContext load is non-trivial. Download filename pattern is '{originalBasename}_clean.wav'.",
+  "rca_of_the_issue": "N/A — no bugs found in Phase A. The risky path (renderPass with playbackRate != 1 + non-44100 sampleRate=47983 + buffer source from a pass-1 AudioBuffer) renders without OfflineAudioContext constructor errors and produces a valid playable cleaned WAV.",
+  "verification_details": {
+    "title": "unmark.audio · AI watermark remover",
+    "presets_4_visible": true,
+    "stealth_fuchsia_active": true,
+    "stealth_shield_icon": true,
+    "phase_a_toggles_on_for_stealth": [true, true, true, true],
+    "phase_a_toggles_off_for_light": [true, true, true, true],
+    "phase_a_sliders_conditional": true,
+    "upload_decode_ok": true,
+    "process_e2e_stealth_ok": true,
+    "audio_processed_readyState": 4,
+    "audio_processed_error": null,
+    "download_filename": "t_clean.wav",
+    "input_duration": "0:03",
+    "output_duration": "0:02 (expected — playbackRate shift)",
+    "api_calls_to_backend": 0,
+    "console_errors": 0,
+    "mobile_grid_cols_2": true
+  }
+}
